@@ -42,9 +42,13 @@ def main():
         
         elif (data == 'C'):
             list_tmp = get_dados()
-            servidor.sendto(str(moda(list_tmp)), endereco)
+            try:
+                servidor.sendto(str(moda(list_tmp)), endereco)
+            except statistics.StatisticsError:
+                servidor.sendto("Não existe moda", endereco)
         
         else:
+            print(data)
             dados = open('dados.txt','a')
             now = datetime.now()
             dados.write(data)
