@@ -7,9 +7,9 @@ This project aims to create a simple UDP (User Datagram Protocol) Socket. This s
 These instructions will show how to use this project on your local machine for deployment and testing purposes.
 
 ### Python Versions used
-'''
+```
 Python 2.7.12 and Python 2.7.14
-'''
+```
 
 ### Prerequisites
 
@@ -33,13 +33,13 @@ Socket, datetime and random modules are already included in the python standard 
 
 To test the project, you must to configure your server by setting the IP, the port and the message buffer size at the server code (servidor.py), for example:
 
-'''
+```
 IP = '127.0.0.1'
 
 porta = 5002
 
 buffer_size = 1024
-'''
+```
 
 And after that, you need to set the same ID and port at the cliente_send_py and cliente_receiver.py files.
 
@@ -47,20 +47,20 @@ And after that, you need to set the same ID and port at the cliente_send_py and 
 To run the project remotely, you'll change the same lines that you changed to run locally. The only difference is that the IP will change. If you are using two computers, for example, one of them will be the server and the other will be the client.
 
 At the server computer you'll get it's IP, set it at the servidor.py IP line and run the server code:
-'''
+```
 $ python servidor.py
-'''
+```
 
 At the client computer, you'll get the same server IP and set at the client IP line, and then run it.
-'''
+```
 $ python cliente_send.py
-'''
+```
 
 or
 
-'''
+```
 $ python cliente_receiver.py
-'''
+```
 
 And that's it.
 
