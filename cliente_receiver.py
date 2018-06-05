@@ -5,7 +5,7 @@ import random
 #Configurando o cliente para troca de mensagens em UDP (SOCK_DGRAM)
 cliente = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)#comunicação ipv4 e socket udp
 
-#Definindo o IP do cliente
+#Definindo o IP do servidor
 IP = '127.0.0.1'
 
 #Definindo a porta para a troca de mensagens com o servidor
