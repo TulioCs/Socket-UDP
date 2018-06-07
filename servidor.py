@@ -18,6 +18,83 @@ buffer_size = 1024
 #Configurando o servidor com o IP e a porta definidos anteriormente
 servidor.bind((IP, porta))
 
+def main():
+    while True:
+        
+        cliente, cliente_endereco = servidor.recvfrom(buffer_size)
+
+        if(cliente == "r"):
+            #Enviando menu de escolha para o cliente
+            servidor.sendto("\nA. Média\nB. Mediana\nC. Moda\nX. Para Sair\n\nOpção: ", cliente_endereco)
+            
+            #Obtendo o dado "opção" do cliente
+            dado = servidor.recvfrom(buffer_size)[0]
+            dado = dado.lower()
+
+            #Se a mensagem do cliente foi a opção A
+            if (dado == 'a'):
+                #Atualizando a lista dos dados
+                list_tmp = get_dados()
+                #Calculando a media
+                ret = round( media(list_tmp), 2 )
+                #Enviando media para o cliente receptor
+                servidor.sendto("Média: " + str(ret) + "°C\n", cliente_endereco)
+            
+            #Se a mensagem do cliente foi a opção B
+            elif(dado == 'b'):
+                #Atualizando a lista dos dados
+                list_tmp = get_dados()
+                #Calculando a mediana
+                ret = round( mediana(list_tmp), 2 )
+                #Enviando mediana para o cliente receptor
+                servidor.sendto("Mediana: " + str(ret) + "°C\n", cliente_endereco)
+            
+            #Se a mensagem do cliente foi a opção C
+            elif (dado == 'c'):
+                #Atualizando a lista dos dados
+                list_tmp = get_dados()
+                try:
+                    #Calculando a moda
+                    ret = round( moda(list_tmp), 2 )
+                    #Enviando moda para o cliente receptor
+                    servidor.sendto("Moda: " + str(ret) + "°C\n", cliente_endereco)
+                except statistics.StatisticsError:
+                    #Caso não exista moda
+                    servidor.sendto("Não existe moda\n", cliente_endereco)
+            elif(dado == 'x'):
+                #Opção para deslogar
+                servidor.sendto("\nCliente Desconectado\n", cliente_endereco)
+            else:
+                #Caso não seja nenhuma das opções
+                servidor.sendto("Opção inválida\n", cliente_endereco)
+
+        elif(cliente == "s"):
+            try:
+                #Obtendo o dado "temperatura" do cliente
+                dado = servidor.recvfrom(buffer_size)[0]
+                #Verficando se a variável 'dado' é um float
+                float(dado)
+                #Abrindo o arquivo para escrita
+                dados = open('dados.txt','a')
+                #Obtendo a data e hora atual
+                now = datetime.now()
+                #Escrevendo a leitura do sensor no arquivo
+                dados.write(dado)
+                #Escrevendo o parâmetro de divisão dos dados
+                dados.write(";")
+                #Escrevendo a data e hora atual no arquivo
+                dados.write(str(now) + "\n")
+                #Fechando o arquivo
+                dados.close()
+                #Retornando resposta
+                servidor.sendto("\nTemperatura de "+dado+"°C salva com sucesso!\n", cliente_endereco)
+            except ValueError:
+                #Se a variável 'dado' não for um float
+                servidor.sendto("O valor digitado é inválido", cliente_endereco)
+
+    #Finalizando servidor
+    servidor.close()
+
 #Função para retornar todas as temperaturas armazenadas no arquivo
 def get_dados ():
     #Abrindo o arquivo para leitura
@@ -49,59 +126,6 @@ def mediana (list_tmp):
 def moda (list_tmp):
     return statistics.mode(list_tmp)
 
-def main():
-    while True:
-        
-        #Obtendo o dado (temperatura / opção) e endereço do cliente
-        dado, cliente_endereco = servidor.recvfrom(buffer_size)
-        
-        #Se a mensagem do cliente foi a opção A
-        if (dado == 'A'):
-            #Atualizando a lista dos dados
-            list_tmp = get_dados()
-            #Enviando media para o cliente receptor
-            servidor.sendto(str(media(list_tmp)), cliente_endereco)
-        
-        #Se a mensagem do cliente foi a opção B
-        elif(dado == 'B'):
-            #Atualizando a lista dos dados
-            list_tmp = get_dados()
-            #Enviando mediana para o cliente receptor
-            servidor.sendto(str(mediana(list_tmp)), cliente_endereco)
-        
-        #Se a mensagem do cliente foi a opção C
-        elif (dado == 'C'):
-            #Atualizando a lista dos dados
-            list_tmp = get_dados()
-            try:
-                #Enviando moda para o cliente receptor
-                servidor.sendto(str(moda(list_tmp)), cliente_endereco)
-            except statistics.StatisticsError:
-                #Caso não exista moda
-                servidor.sendto("\nNão existe moda", cliente_endereco)
-        
-        try:
-            #Verficando se a variável 'dado' é um float
-            float(dado)
-            #Abrindo o arquivo para escrita
-            dados = open('dados.txt','a')
-            #Obtendo a data e hora atual
-            now = datetime.now()
-            #Escrevendo a leitura do sensor no arquivo
-            dados.write(dado)
-            #Escrevendo o parâmetro de divisão dos dados
-            dados.write(";")
-            #Escrevendo a data e hora atual no arquivo
-            dados.write(str(now) + "\n")
-            #Fechando o arquivo
-            dados.close()
-        except ValueError:
-            #Se a variável 'dado' não for um float
-            servidor.sendto("O valor digitado é inválido", cliente_endereco)
-    #Finalizando servidor
-    servidor.close()
-            
-        
 
 if __name__ == '__main__':
     main()
