@@ -71,7 +71,7 @@ We use [SemVer](http://semver.org/) for versioning. For the versions available, 
 ## Authors
 
 * **Tulio Campos** - *Initial work* - [Socket-UDP](https://github.com/TulioCs/Socket-UDP)
-* **Levy Santiago** - *This repository* - [Socket-UDP](https://github.com/Levysantiago/Socket-UDP)
+* **Levy Santiago** - [Socket-UDP](https://github.com/Levysantiago/Socket-UDP)
 
 <!-- See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project. -->
 
