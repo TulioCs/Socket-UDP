@@ -3,7 +3,7 @@ import socket
 from datetime import datetime
 import statistics
 servidor = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)#comunicação ipv4 e socket udp
-IP = '127.0.0.1'
+IP = '192.168.43.171'
 porta = 5002
 buffer_size = 1024
 servidor.bind((IP,porta))
@@ -45,7 +45,7 @@ def main():
             servidor.sendto(str(moda(list_tmp)), endereco)
         
         else:
-            dados = open('dados.txt','a')
+            dados = open('dados.txt','a+')
             now = datetime.now()
             dados.write(data)
             dados.write(";")
