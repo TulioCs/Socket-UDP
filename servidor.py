@@ -40,32 +40,42 @@ def main():
                 if (resp == 'a'):
                     #Atualizando a lista dos dados
                     list_tmp = get_dados()
-                    #Calculando a media
-                    ret = round( media(list_tmp), 2 )
-                    #Enviando media para o cliente receptor
-                    servidor.sendto("Média: " + str(ret) + "°C\n", cliente_endereco)
-
+                    if(list_tmp != None):
+                        #Calculando a media
+                        ret = round( media(list_tmp), 2 )
+                        #Enviando media para o cliente receptor
+                        servidor.sendto("Média: " + str(ret) + "°C\n", cliente_endereco)
+                    
+                    else:
+                        servidor.sendto("Sem Temperaturas Cadastradas",cliente_endereco)
+               
                 #Se a mensagem do cliente foi a opção B
                 elif(resp == 'b'):
                     #Atualizando a lista dos dados
                     list_tmp = get_dados()
-                    #Calculando a mediana
-                    ret = round( mediana(list_tmp), 2 )
-                    #Enviando mediana para o cliente receptor
-                    servidor.sendto("Mediana: " + str(ret) + "°C\n", cliente_endereco)
-                
+                    if(list_tmp != None):
+                        #Calculando a mediana
+                        ret = round( mediana(list_tmp), 2 )
+                        #Enviando mediana para o cliente receptor
+                        servidor.sendto("Mediana: " + str(ret) + "°C\n", cliente_endereco)
+                    else:
+                        servidor.sendto("Sem Temperaturas Cadastradas",cliente_endereco)
+               
                 #Se a mensagem do cliente foi a opção C
                 elif (resp == 'c'):
                     #Atualizando a lista dos dados
                     list_tmp = get_dados()
-                    try:
-                        #Calculando a moda
-                        ret = round( moda(list_tmp), 2 )
-                        #Enviando moda para o cliente receptor
-                        servidor.sendto("Moda: " + str(ret) + "°C\n", cliente_endereco)
-                    except statistics.StatisticsError:
-                        #Caso não exista moda
-                        servidor.sendto("Não existe moda\n", cliente_endereco)
+                    if(list_tmp != None):
+                        try:
+                            #Calculando a moda
+                            ret = round( moda(list_tmp), 2 )
+                            #Enviando moda para o cliente receptor
+                            servidor.sendto("Moda: " + str(ret) + "°C\n", cliente_endereco)
+                        except statistics.StatisticsError:
+                            #Caso não exista moda
+                            servidor.sendto("Não existe moda\n", cliente_endereco)
+                    else:
+                        servidor.sendto("Sem Temperaturas Cadastradas",cliente_endereco)
                 elif(resp == 'x'):
                     #Opção para deslogar
                     cliente_list.pop(cliente_endereco)
@@ -104,9 +114,11 @@ def main():
 
 #Função para retornar todas as temperaturas armazenadas no arquivo
 def get_dados ():
-    #Abrindo o arquivo para leitura
-    dados = open('dados.txt','r')
-
+    try:
+        #Abrindo o arquivo para leitura
+        dados = open('dados.txt','r')
+    except:
+        return None
     #Criando uma lista para retornar as temperaturas
     temperatura = []
 
