@@ -18,23 +18,30 @@ buffer_size = 1024
 #Configurando o servidor com o IP e a porta definidos anteriormente
 servidor.bind((IP, porta))
 
+#Lista de clientes
 cliente_list = {} 
 
 print("Servidor Startado\nAguardando por Clientes...")
 
 def main():
     while True:
-        
+    	#Obtendo mensagem de cliente
         resp, cliente_endereco = servidor.recvfrom(buffer_size)
+        #Setando a variável para lowcase
         resp = resp.lower()
         
+        #Caso o cliente não esteja na lista
         if (cliente_endereco not in cliente_list):
+            #Setando o identificador ('r' ou 's') no dicionário
             cliente_list[cliente_endereco] = resp
+            print("\nLista de clientes:")
             print(cliente_list)
+            #Se o cliente for receiver, o servidor envia o menu de opções
             if (resp == 'r'):
                 #Enviando menu de escolha para o cliente
                 servidor.sendto("\nA. Média\nB. Mediana\nC. Moda\nX. Para Sair\n\nOpção: ", cliente_endereco)
         else:
+        	#Caso o cliente seja o RECEIVER
             if(cliente_list[cliente_endereco] == 'r'):
                 #Se a mensagem do cliente foi a opção A
                 if (resp == 'a'):
@@ -79,11 +86,14 @@ def main():
                 elif(resp == 'x'):
                     #Opção para deslogar
                     cliente_list.pop(cliente_endereco)
-                    print("Cliente " + str(cliente_endereco) + " desconectado!")
+                    print("\nCliente " + str(cliente_endereco) + " desconectado!")
                     servidor.sendto("\nCliente Desconectado\n", cliente_endereco)
+                    print("\nLista de clientes:")
+                    print(cliente_list)
                 else:
                     #Caso não seja nenhuma das opções
                     servidor.sendto("Opção inválida\n", cliente_endereco)
+            #Caso o cliente seja o SENDER
             elif(cliente_list[cliente_endereco] == 's'):
                 try:
                     #Verficando se a variável 'dado' é um float
@@ -108,9 +118,9 @@ def main():
                     servidor.sendto("O valor digitado é inválido", cliente_endereco)
                 #Desconectando cliente sender
                 cliente_list.pop(cliente_endereco)
-                print("Cliente " + str(cliente_endereco) + " desconectado!")
-    #Finalizando servidor
-    servidor.close()
+                print("\nCliente " + str(cliente_endereco) + " desconectado!")
+                print("\nLista de clientes:")
+                print(cliente_list)
 
 #Função para retornar todas as temperaturas armazenadas no arquivo
 def get_dados ():
@@ -147,4 +157,10 @@ def moda (list_tmp):
 
 
 if __name__ == '__main__':
-    main()
+	try:
+		main()
+	#Fazendo o tratamento do CTRL+C
+	except KeyboardInterrupt:
+		print("\nFinalizando servidor...\n")
+		#Finalizando servidor
+		servidor.close()

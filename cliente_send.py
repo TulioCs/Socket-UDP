@@ -14,18 +14,18 @@ porta = 5002
 #Definindo o tamanho do buffer para as mensagens
 buffer_size = 1024
 
+#Configurando o endereço e porta de destino (servidor)
+dest = (IP, porta)
+
 def main():
 	#Definindo mensagem para ser enviada ao servidor (Simulação de medida de Temperatura de um sensor)
 	msg = round(random.uniform(1, 128), 2)
 
-	#Conectando cliente com o servidor
-	cliente.connect((IP,porta))
-
 	#Avisando ao servidor que esse cliente é o sender
-	cliente.send(("s"))
+	cliente.sendto("s", dest)
 
 	#Enviando mensagem para o servidor
-	cliente.send(str(msg))
+	cliente.sendto(str(msg), dest)
 
 	print( cliente.recv(buffer_size) )
 
