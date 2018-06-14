@@ -14,12 +14,12 @@ porta = 5002
 #Definindo o tamanho do buffer para as mensagens
 buffer_size = 1024
 
-def main():
-	#Conectando cliente com o servidor
-	cliente.connect((IP, porta))
+#Configurando o endereço e porta de destino (servidor)
+dest = (IP, porta)
 
+def main():
 	#Avisando ao servidor que esse cliente é o receiver
-	cliente.send(("r"))
+	cliente.sendto("r", dest)
 
 	#Recebendo o menu de escolhas do servidor
 	menu = cliente.recv(buffer_size)
@@ -32,17 +32,14 @@ def main():
 	#Enquanto a mensagem for diferente de X
 	while msg != 'x':
 		#Enviando mensagem para o servidor
-		cliente.send((msg))
+		cliente.sendto(msg, dest)
 
 		#Obtendo resultado enviado pelo servidor
 		data = cliente.recv(buffer_size)
 		print(data)
 
-		#Conectando cliente com o servidor
-		cliente.connect((IP, porta))
-
 		#Avisando ao servidor que esse cliente é o receiver
-		cliente.send(("r"))
+		cliente.sendto("r", dest)
 
 		#Recebendo o menu de escolhas do servidor
 		cliente.recv(buffer_size)
@@ -52,7 +49,7 @@ def main():
 		msg = msg.lower()
 
 	#Enviando opção de saida
-	cliente.send( (msg) )
+	cliente.sendto( msg, dest )
 	print( cliente.recv(buffer_size) )
 
 	#Finalizando cliente
